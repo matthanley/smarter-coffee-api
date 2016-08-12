@@ -15,7 +15,7 @@ class SmarterCoffee
 		"0301" 	=> 'brew in progress',
 		"0305" 	=> 'carafe not present',
 		"0306" 	=> 'no water',
-		"0300" 	=> 'reset',
+		//"0300" 	=> 'reset',
 		"0"	=> 'unknown response "%s": check machine',
 	];
 
