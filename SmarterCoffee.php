@@ -11,14 +11,12 @@ class SmarterCoffee
 	const BUFFER_LENGTH = 10;
 
 	protected $response = [
-		"03007e320b13000222" 	=> 'brewing',
-		"03017e320b13000222" 	=> 'brew in progress',
-		"03017e325313000222" 	=> 'brew in progress',
-		"03057e320613000224" 	=> 'carafe not present',
-		"03057e320612000222" 	=> 'carafe not present',
-		"03067e320700000224" 	=> 'no water',
-		"03007e320613000122" 	=> 'reset',
-		"default"				=> 'unknown response "%s": check machine',
+		"0300" 	=> 'brewing',
+		"0301" 	=> 'brew in progress',
+		"0305" 	=> 'carafe not present',
+		"0306" 	=> 'no water',
+		"0300" 	=> 'reset',
+		"0"	=> 'unknown response "%s": check machine',
 	];
 
 	public function __construct($address, $port = 2081) {
@@ -39,17 +37,21 @@ class SmarterCoffee
 		try {
 			$sc = fsockopen($this->address, $this->port);
 			fwrite($sc, $command);
-			$out = bin2hex(fgets($sc, self::BUFFER_LENGTH));
-			if (array_key_exists($out, $this->response)) {
-				$message = $this->response[$out];
-			} else {
-				$message = sprintf($this->response['default'], $out);
-			}
+			$message = $this->parse(fgets($sc, self::BUFFER_LENGTH));
 		}
 		finally {
 			@fclose($sc);
 		}
 		return $message;
+	}
+
+	protected function parse($output) {
+		$output = bin2hex($output);
+		foreach ($this->response as $flag => $response) {
+			if (strpos($output, $flag) === 0) {
+				return sprintf($response, $output);
+			}
+		}
 	}
 
 	public static function make($address) {
