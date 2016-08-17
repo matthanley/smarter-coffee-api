@@ -4,14 +4,11 @@ PHP Smarter Coffee API, inspired by https://github.com/AdenForshaw/smarter-coffe
 
 ## Usage
 
-Either include and call statically for basic brewing or instantiate:
-
-```php
-SmarterCoffee::make('192.168.0.100');
-```
-
 ```php
 $coffeeMaker = new SmarterCoffee('192.168.0.100');
 $coffeeMaker->reset();
-echo $coffeeMaker->brew();
+$coffeeMaker->setCups(4);
+$coffeeMaker->setStrength(1);
+$coffeeMaker->setGrind(true);
+$coffeeMaker->brew();
 ```
