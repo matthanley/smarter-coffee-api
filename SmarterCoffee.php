@@ -19,11 +19,12 @@ class SmarterCoffee
 
 	const BUFFER_LENGTH = 10;
 
-	const RESULT_UNKNOWN = 0;
 	const RESULT_SUCCESS = 1;
-	const RESULT_BREW_IN_PROGRESS = 2;
-	const RESULT_CARAFE_NOT_PRESENT = 3;
-	const RESULT_NO_WATER = 4;
+	const RESULT_NOOP = 2;
+	const RESULT_CARAFE_NOT_PRESENT = 4;
+	const RESULT_NO_WATER = 8;
+	const RESULT_BREW_IN_PROGRESS = 16;
+	const RESULT_UNKNOWN = 32;
 
 	public function __construct($address, $port = 2081) {
 		$this->address = $address;
@@ -40,6 +41,9 @@ class SmarterCoffee
 	}
 
 	public function setCups($cups) {
+		if (!is_null($this->cups) && $this->cups == $cups) {
+			return self::RESULT_NOOP;
+		}
 		$cups = max(1, $cups);
 		$cups = min(12, $cups);
 		return $this->send(
@@ -48,6 +52,9 @@ class SmarterCoffee
 	}
 
 	public function setStrength($strength) {
+		if (!is_null($this->strength) && $this->strength == $strength) {
+			return self::RESULT_NOOP;
+		}
 		$strength = max(0, $strength);
 		$strength = min(2, $strength);
 		return $this->send(
